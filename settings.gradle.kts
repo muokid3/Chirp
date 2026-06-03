@@ -33,3 +33,7 @@ plugins {
 }
 
 include(":composeApp")
+include(":core:domain")
+include(":core:presentation")
+include(":core:data")
+include(":core:designsystem")
