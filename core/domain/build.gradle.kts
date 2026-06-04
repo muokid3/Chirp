@@ -64,11 +64,6 @@ kotlin {
             }
         }
 
-        commonTest {
-            dependencies {
-                implementation(libs.kotlin.test)
-            }
-        }
 
         androidMain {
             dependencies {
@@ -78,13 +73,6 @@ kotlin {
             }
         }
 
-        getByName("androidDeviceTest") {
-            dependencies {
-                implementation(libs.androidx.junit)
-                implementation(libs.androidx.runner)
-                implementation(libs.androidx.test.core)
-            }
-        }
 
         iosMain {
             dependencies {
