@@ -173,6 +173,7 @@ convention-kmp-library = { id = "com.berxley.convention.kmp.library", version = 
 convention-cmp-library = { id = "com.berxley.convention.cmp.library", version = "unspecified" }
 convention-cmp-feature = { id = "com.berxley.convention.cmp.feature", version = "unspecified" }
 convention-buildkonfig = { id = "com.berxley.convention.buildkonfig", version = "unspecified" }
+convention-room = { id = "com.berxley.convention.room", version = "unspecified" }
 
 
 # Android
