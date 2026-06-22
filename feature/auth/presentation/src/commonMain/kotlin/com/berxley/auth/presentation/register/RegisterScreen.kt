@@ -43,7 +43,7 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
 fun RegisterRoot(
-    viewModel: RegisterViewModel = viewModel(),
+    viewModel: RegisterViewModel = koinViewModel<RegisterViewModel>(),
     onRegisterSuccess: (String) -> Unit,
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
