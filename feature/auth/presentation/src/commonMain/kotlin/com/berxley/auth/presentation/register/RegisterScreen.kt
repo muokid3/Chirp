@@ -17,6 +17,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
 import chirp.feature.auth.presentation.generated.resources.Res
 import chirp.feature.auth.presentation.generated.resources.email
 import chirp.feature.auth.presentation.generated.resources.email_placeholder
@@ -40,22 +41,13 @@ import com.berxley.core.presentation.util.ObserveAsEvents
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
-
 @Composable
 fun RegisterRoot(
-    viewModel: RegisterViewModel = koinViewModel<RegisterViewModel>()
+    viewModel: RegisterViewModel = viewModel()
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
+
     val snackbarHostState = remember { SnackbarHostState() }
-
-    ObserveAsEvents(viewModel.channel) { event ->
-        when (event) {
-
-            else -> {
-
-            }
-        }
-    }
 
     RegisterScreen(
         state = state,
@@ -73,76 +65,71 @@ fun RegisterScreen(
     ChirpSnackbarScaffold(
         snackbarHostState = snackbarHostState
     ) {
-        ChirpSnackbarScaffold(
-            snackbarHostState = snackbarHostState
+        ChirpAdaptiveFormLayout(
+            headerText = stringResource(Res.string.welcome_to_chirp),
+            errorText = state.registrationError?.asString(),
+            logo = { ChirpBrandLogo() }
         ) {
-            ChirpAdaptiveFormLayout(
-                headerText = stringResource(Res.string.welcome_to_chirp),
-                errorText = state.registrationError?.asString(),
-                logo = { ChirpBrandLogo() },
-            ) {
-                ChirpTextField(
-                    state = state.usernameTextState,
-                    placeholder = stringResource(Res.string.username_placeholder),
-                    title = stringResource(Res.string.username),
-                    supportingText = state.usernameError?.asString()
-                        ?: stringResource(Res.string.username_hint),
-                    isError = state.usernameError != null,
-                    onFocusChanged = { isFocused ->
-                        onAction(RegisterAction.OnInputTextFocusGain)
-                    }
-                )
-                Spacer(modifier = Modifier.height(16.dp))
-                ChirpTextField(
-                    state = state.emailTextState,
-                    placeholder = stringResource(Res.string.email_placeholder),
-                    title = stringResource(Res.string.email),
-                    supportingText = state.emailError?.asString(),
-                    isError = state.emailError != null,
-                    onFocusChanged = { isFocused ->
-                        onAction(RegisterAction.OnInputTextFocusGain)
-                    }
-                )
-                Spacer(modifier = Modifier.height(16.dp))
-                ChirpPasswordTextField(
-                    state = state.passwordTextState,
-                    placeholder = stringResource(Res.string.password),
-                    title = stringResource(Res.string.password),
-                    supportingText = state.passwordError?.asString()
-                        ?: stringResource(Res.string.password_hint),
-                    isError = state.passwordError != null,
-                    onFocusChanged = { isFocused ->
-                        onAction(RegisterAction.OnInputTextFocusGain)
-                    },
-                    onToggleVisibilityClick = {
-                        onAction(RegisterAction.OnTogglePasswordVisibilityClick)
-                    },
-                    isPasswordVisible = state.isPasswordVisible
-                )
-                Spacer(modifier = Modifier.height(16.dp))
+            ChirpTextField(
+                state = state.usernameTextState,
+                placeholder = stringResource(Res.string.username_placeholder),
+                title = stringResource(Res.string.username),
+                supportingText = state.usernameError?.asString()
+                    ?: stringResource(Res.string.username_hint),
+                isError = state.usernameError != null,
+                onFocusChanged = { isFocused ->
+                    onAction(RegisterAction.OnInputTextFocusGain)
+                }
+            )
+            Spacer(modifier = Modifier.height(16.dp))
+            ChirpTextField(
+                state = state.emailTextState,
+                placeholder = stringResource(Res.string.email_placeholder),
+                title = stringResource(Res.string.email),
+                supportingText = state.emailError?.asString(),
+                isError = state.emailError != null,
+                onFocusChanged = { isFocused ->
+                    onAction(RegisterAction.OnInputTextFocusGain)
+                }
+            )
+            Spacer(modifier = Modifier.height(16.dp))
+            ChirpPasswordTextField(
+                state = state.passwordTextState,
+                placeholder = stringResource(Res.string.password),
+                title = stringResource(Res.string.password),
+                supportingText = state.passwordError?.asString()
+                    ?: stringResource(Res.string.password_hint),
+                isError = state.passwordError != null,
+                onFocusChanged = { isFocused ->
+                    onAction(RegisterAction.OnInputTextFocusGain)
+                },
+                onToggleVisibilityClick = {
+                    onAction(RegisterAction.OnTogglePasswordVisibilityClick)
+                },
+                isPasswordVisible = state.isPasswordVisible
+            )
+            Spacer(modifier = Modifier.height(16.dp))
 
-                ChirpButton(
-                    text = stringResource(Res.string.register),
-                    onClick = {
-                        onAction(RegisterAction.OnRegisterClick)
-                    },
-                    enabled = state.canRegister,
-                    isLoading = state.isRegistering,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                )
-                Spacer(modifier = Modifier.height(8.dp))
-                ChirpButton(
-                    text = stringResource(Res.string.login),
-                    onClick = {
-                        onAction(RegisterAction.OnLoginClick)
-                    },
-                    style = ChirpButtonStyle.SECONDARY,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                )
-            }
-
+            ChirpButton(
+                text = stringResource(Res.string.register),
+                onClick = {
+                    onAction(RegisterAction.OnRegisterClick)
+                },
+                enabled = state.canRegister,
+                isLoading = state.isRegistering,
+                modifier = Modifier
+                    .fillMaxWidth()
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            ChirpButton(
+                text = stringResource(Res.string.login),
+                onClick = {
+                    onAction(RegisterAction.OnLoginClick)
+                },
+                style = ChirpButtonStyle.SECONDARY,
+                modifier = Modifier
+                    .fillMaxWidth()
+            )
         }
     }
 }
