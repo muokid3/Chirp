@@ -1,5 +1,5 @@
 package com.berxley.auth.presentation.register
 
-sealed class RegisterEvent {
-
+sealed interface RegisterEvent {
+    data class Success(val email: String): RegisterEvent
 }

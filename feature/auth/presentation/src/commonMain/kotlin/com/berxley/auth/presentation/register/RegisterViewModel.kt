@@ -1,22 +1,33 @@
 package com.berxley.auth.presentation.register
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import chirp.feature.auth.presentation.generated.resources.Res
+import chirp.feature.auth.presentation.generated.resources.error_account_exists
 import chirp.feature.auth.presentation.generated.resources.error_invalid_email
 import chirp.feature.auth.presentation.generated.resources.error_invalid_password
 import chirp.feature.auth.presentation.generated.resources.error_invalid_username
 import com.berxley.auth.domain.EmailValidator
 import com.berxley.auth.presentation.register.RegisterAction.OnLoginClick
+import com.berxley.core.domain.auth.AuthService
+import com.berxley.core.domain.util.DataError
+import com.berxley.core.domain.util.onFailure
+import com.berxley.core.domain.util.onSuccess
 import com.berxley.core.domain.validation.PasswordValidator
 import com.berxley.core.presentation.util.UiText
+import com.berxley.core.presentation.util.toUiText
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 
 
-class RegisterViewModel : ViewModel() {
+class RegisterViewModel(
+    private val authService: AuthService
+
+) : ViewModel() {
 
     private val _state = MutableStateFlow(RegisterState())
     val state = _state.asStateFlow()
@@ -26,11 +37,55 @@ class RegisterViewModel : ViewModel() {
 
     fun onAction(action: RegisterAction) {
         when (action) {
-            OnLoginClick -> validateFormInputs()
+            RegisterAction.OnLoginClick -> Unit
+            RegisterAction.OnRegisterClick -> register()
+            RegisterAction.OnTogglePasswordVisibilityClick -> {
+                _state.update { it.copy(
+                    isPasswordVisible = !it.isPasswordVisible
+                ) }
+            }
             else -> Unit
         }
     }
 
+
+    private fun register() {
+        if (validateFormInputs()) {
+            return
+        }
+
+        viewModelScope.launch {
+            _state.update { it.copy(
+                isRegistering = true
+            ) }
+
+            val email = state.value.emailTextState.text.toString()
+            val username = state.value.usernameTextState.text.toString()
+            val password = state.value.passwordTextState.text.toString()
+
+            authService
+                .register(
+                    email = email,
+                    username = username,
+                    password = password
+                )
+                .onSuccess {
+                    _state.update { it.copy(
+                        isRegistering = false
+                    ) }
+                }
+                .onFailure { error ->
+                    val registrationError = when(error) {
+                        DataError.Remote.CONFLICT -> UiText.Resource(Res.string.error_account_exists)
+                        else -> error.toUiText()
+                    }
+                    _state.update { it.copy(
+                        isRegistering = false,
+                        registrationError = registrationError
+                    ) }
+                }
+        }
+    }
 
     private fun clearAllTextFieldErrors() {
         _state.update { it.copy(
