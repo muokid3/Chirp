@@ -39,8 +39,6 @@ fun ChirpSurface(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier
                 .fillMaxSize()
-                .padding(horizontal = 16.dp)
-                .verticalScroll(rememberScrollState())
         ) {
             header()
             Surface(
@@ -56,6 +54,8 @@ fun ChirpSurface(
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
+                        .padding(horizontal = 16.dp)
+                        .verticalScroll(rememberScrollState())
                 ) {
                     content()
                 }
