@@ -1,3 +1,8 @@
 package com.berxley.core.data.dto.requests
 
-data class EmailRequest()
+import kotlinx.serialization.Serializable
+
+@Serializable
+data class EmailRequest(
+    val email: String
+)
