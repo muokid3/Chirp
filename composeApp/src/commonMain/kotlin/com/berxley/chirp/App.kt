@@ -13,20 +13,24 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.navigation.compose.rememberNavController
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 import chirp.composeapp.generated.resources.Res
 import chirp.composeapp.generated.resources.compose_multiplatform
 import com.berxley.auth.presentation.register.RegisterRoot
+import com.berxley.chirp.navigation.DeepLinkListener
+import com.berxley.chirp.navigation.NavigationRoot
 import com.berxley.core.designsystem.theme.ChirpTheme
 
 @Composable
 @Preview
 fun App() {
+    val navController = rememberNavController()
+
+    DeepLinkListener(navController)
     ChirpTheme {
-        RegisterRoot(
-            onRegisterSuccess = {  }
-        )
+        NavigationRoot(navController)
     }
 }
